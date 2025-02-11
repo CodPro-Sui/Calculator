@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Calculator_CodPro</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:ital,wght@0,200..800;1,200..800&display=swap" rel="stylesheet">
+
+
+  <!-- styling here -->
+  <style type="text/css" media="all">
+    *,
+    *::before,
+    *::after {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Atkinson Hyperlegible Next", serif !important;
+      background: rgb(243, 244, 245);
+    }
+
+    .handler {
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .handler #display {
+      height: 30vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .handler #display div {}
+
+    .handler #display .history {
+      height: 30%;
+    }
+
+    .handler #display .input_area {
+      height: 70%;
+      background: transparent;
+    }
+
+
+    .handler #display .input_area input {
+      width: 100%;
+      height: 100%;
+      border: none;
+      outline: none;
+      font-size: 2.4em;
+      color: #090D3C;
+      padding: 0 11px;
+      text-align: right;
+      font-weight: 500;
+      letter-spacing: .7px;
+    }
+
+    .handler #display .input_area input::placeholder {
+      color: #0B0F35B8;
+    }
+
+
+    .handler .managing_cal {
+      height: 65vh;
+    }
+
+    #keypads {
+      padding: 10px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 15px;
+    }
+
+    #keypads button {
+      width: 100%;
+      aspect-ratio: 1/1;
+      font-size: 1.1em;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+    }
+
+    .sp {
+      color: #202020;
+      background: rgba(0, 0, 0, .08);
+      font-size: 1.5em;
+      font-weight: 500;
+    }
+
+    .ad {
+      font-size: 1.5em !important;
+    }
+
+    .num {
+      color: #444444;
+      font-weight: 500;
+    }
+
+    button {
+      border: none;
+      color: #070B1F;
+      background: rgb(255, 255, 255);
+      box-shadow: 0 0 10px rgba(0, 0, 0, .03);
+      transition: all .28s ease;
+      font-weight: 400;
+      color: #929292;
+    }
+
+    button:active {
+      transform: scale(.93);
+      transition: all .28s ease;
+      background: rgba(0, 0, 0, .09);
+    }
+
+    .st {
+      color: #42C88C;
+    }
+
+    .equal {
+      font-size: 2em !important;
+      color: white;
+      background: #42C88C;
+    }
+
+    .history {
+      text-align: right;
+      display: flex;
+      align-items: center;
+      justify-content: right;
+      padding-right: 12px;
+      font-size: 1.33em;
+      letter-spacing: 0.5px;
+      font-weight: 500;
+      color: #6E6F74;
+      border: none !important;
+    }
+  </style>
+</head>
+
+<body>
+  <!-- main page -->
+  <div class="handler">
+    <!-- display of cal -->
+    <div id="display">
+      <div class="input_area"><input type="text" name="calc_value" id="calc_display" placeholder="0" readonly /></div>
+      <div class="recently history" id="hst"></div>
+    </div>
+
+    <!-- keypads or button -->
+    <div class="managing_cal">
+      <!-- keypads -->
+      <div id="keypads">
+        <button onclick="radian()" ondblclick="radValue()" class="st">rad</button>
+        <button onclick="degree()" class="st">deg</button>
+        <button onclick="valueInclude('(')">(</button>
+        <button onclick="valueInclude(')')">)</button>
+        <button onclick="log('log(')" class="st">log</button>
+        <button onclick="factorial()">!</button>
+        <button class="sp" onclick="allClear()">AC</button>
+        <button class="sp ad" onclick="valueInclude('%')">%</button>
+        <button class="sp" onclick="clearOne()">C</button>
+        <button class="sp ad" onclick="valueInclude('/')">÷</button>
+        <button class="opt" onclick="caret()">^</button>
+        <button class="num" onclick="valueInclude('7')">7</button>
+        <button class="num" onclick="valueInclude('8')">8</button>
+        <button class="num" onclick="valueInclude('9')">9</button>
+        <button class="sp ad" onclick="valueInclude('*')">×</button>
+        <button onclick="root('√')">√</button>
+        <button class="num" onclick="valueInclude('4')">4</button>
+        <button class="num" onclick="valueInclude('5')">5</button>
+        <button class="num" onclick="valueInclude('6')">6</button>
+        <button class="sp ad" onclick="valueInclude('-')">−</button>
+        <button onclick="pi()">π</button>
+        <button class="num" onclick="valueInclude('1')">1</button>
+        <button class="num" onclick="valueInclude('2')">2</button>
+        <button class="num" onclick="valueInclude('3')">3</button>
+        <button class="sp ad" onclick="valueInclude('+')">+</button>
+        <button onclick="euler()">e</button>
+        <button class="num" onclick="valueInclude('0')">0</button>
+        <button class="num" onclick="valueInclude('00')">00</button>
+        <button class="num" onclick="valueInclude('.')">.</button>
+        <button class="equal" id="equalAll" onclick="equal()">=</button>
+      </div>
+    </div>
+
+  </div>
+
+
+  <!-- scripting language -->
+  <script type="text/javascript" charset="utf-8">
+    const display = document.getElementById('calc_display');
+    const fontFamily = window.getComputedStyle(document.body).fontFamily;
+    document.body.style.fontFamily = fontFamily;
+
+
+
+    function valueInclude(value) {
+      setInterval(() => {
+        if (display.value === '') {
+          history.innerHTML = '';
+        } else {
+          history.innerHTML = `${eval(display.value)}`;
+        }
+      })
+
+      if (display.value === value) {
+        display.value = value;
+      } else {
+        display.value += value;
+      }
+
+      setInterval(() => {
+        let length = display.value.length;
+        if (length <= 12) {
+          display.style.fontSize = '2.4em';
+          display.style.transition = 'all 0.2s ease-out';
+        } else if (length > 12 && length <= 18) {
+          display.style.fontSize = '1.9em';
+        } else if (length > 18 && length <= 23) {
+          display.style.fontSize = '1.5em';
+        } else {
+          display.style.fontSize = '1em';
+        }
+      }, 1)
+
+    }
+
+
+    let history = document.getElementById('hst');
+
+
+
+
+
+
+    function allClear() {
+      display.value = '';
+    }
+
+    function clearOne() {
+      display.value = display.value.slice(0, -1);
+    }
+
+    function factorial() {
+      let target = parseInt(display.value); // Convert input to an integer
+      if (isNaN(target) || target < 0) {
+        display.value = "Invalid Input"; // Handle negative or non-numeric input
+        return;
+      }
+      let store = 1;
+      for (let i = target; i > 0; i--) {
+        store *= i;
+      }
+      display.value = store;
+    }
+
+    function caret() {
+      display.value += "^";
+    }
+
+    function root() {
+      display.value += "√";
+    }
+
+    function equal() {
+      let expression = display.value.replace(/√(\d+)/g, 'Math.sqrt($1)').replace(/\^/g, '**').replace(/log\((\d+\.\d+)/g, 'Math.log10($1)').replace(/rad\((\d+(\.\d+)?)/g, '($1 * Math.PI / 180)').replace(/deg\((\d+(\.\d+)?)/g, '$1 * 180 / Math.PI');
+      let result;
+      try {
+
+
+        result = eval(expression);
+        display.value = result.toLocaleString();
+      } catch (error) {
+        display.value = "exp_error:)";
+      }
+    }
+
+
+
+    function pi() {
+      display.value = (Math.PI).toFixed(12);
+    }
+
+    function euler() {
+      display.value = (Math.E).toFixed(12);
+    }
+
+    function log() {
+      display.value += 'log(';
+    }
+
+    function radian() {
+      display.value += 'rad(';
+    }
+
+    function degree() {
+      display.value = 'deg(';
+    }
+  </script>
+</body>
+
+</html>
